@@ -7,6 +7,7 @@ import '../api/api_service.dart';
 import '../model/item_group_model.dart';
 import '../model/item_grade_model.dart';
 import '../model/item_master_model.dart';
+import '../pages/item_master_page.dart';
 
 class ItemAddMaster extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class ItemAddMaster extends StatefulWidget {
 }
 
 class _ItemAddMasterState extends State<ItemAddMaster> {
+
       var formKey = GlobalKey<FormState>();
       var code =TextEditingController();
       var barcode = TextEditingController();
@@ -56,6 +58,39 @@ class _ItemAddMasterState extends State<ItemAddMaster> {
     });
     print("data : $listData");
   }
+
+  Future _alertSave(BuildContext context,String message) async {
+    return showDialog (
+      context: context,
+      builder : (BuildContext context) {
+        return AlertDialog(
+          title: Text("Info"),
+          content: Text(message),
+          actions : [
+          TextButton(onPressed:(){Navigator.push(context,MaterialPageRoute(builder: (context) => ItemMaster()));} , 
+          child: Text("Ok"))
+          ]
+              );
+          }
+        );
+      }
+  
+  Future _alertFailed(BuildContext context,String message) async {
+    return showDialog (
+      context: context,
+      builder : (BuildContext context) {
+        return AlertDialog(
+          title: Text("Info"),
+          content: Text(message),
+          actions : [
+          TextButton(onPressed:(){Navigator.pop(context);} , 
+          child: Text("Ok"))
+          ]
+              );
+          }
+        );
+      }
+
       
   void _onsaved(
     String code,
@@ -63,13 +98,13 @@ class _ItemAddMasterState extends State<ItemAddMaster> {
     String description,
     String group,
     String grade,
-    int isdeadstock,
-    int qtysat,
-    int instock,
-    int totalInstock,
-    int minStock,
-    int maxStock,
-    int curpricelist
+    dynamic isdeadstock,
+    dynamic qtysat,
+    dynamic instock,
+    dynamic totalInstock,
+    dynamic minStock,
+    dynamic maxStock,
+    dynamic curpricelist
     )
     { 
       setState(() {
@@ -111,9 +146,9 @@ class _ItemAddMasterState extends State<ItemAddMaster> {
                    backgroundColor: Colors.redAccent,
                  ),
                    body: new Container(
-                     
                      padding: new EdgeInsets.all(32.0),
-                     child: new Center(
+                     child: new Form(
+                      key: formKey,
                        child: new Column(
                          children: <Widget>[
                           Expanded(
@@ -130,6 +165,7 @@ class _ItemAddMasterState extends State<ItemAddMaster> {
                                }
                                return null ;
                              },
+                             onSaved : (value) => code.text = value
                            )
                           ),
                           Expanded(child: 
@@ -145,6 +181,7 @@ class _ItemAddMasterState extends State<ItemAddMaster> {
                                }
                                return null ;
                              },
+                               onSaved : (value) => barcode.text = value
                            )
                           ),
                            TextFormField(
@@ -159,6 +196,7 @@ class _ItemAddMasterState extends State<ItemAddMaster> {
                                }
                                return null ;
                              },
+                                onSaved : (value) => description.text = value
                            ),
                            Expanded(child: 
                            Container(
@@ -308,10 +346,22 @@ class _ItemAddMasterState extends State<ItemAddMaster> {
                                    minWidth: 200.0,
                                   height: 100.0,
                                    child: TextButton(
-                                   onPressed: (){
-                                     _onsaved(code.text, barcode.text, description.text, _valgroup, _valgrade, int.parse(_valDead) , 
-                                     int.parse(qtySat.text), int.parse(inStock.text), int.parse(totalinstock.text), int.parse(minsstock.text), int.parse(maxstock.text), int.parse(curpricelist.text));
-                                   Navigator.pop(context, 'Success!');
+                                   onPressed: (){ 
+                                     
+                                     if (code.text == ""){
+                                        _alertFailed(context,"Code is mandatory");
+                                     }
+                                      else if (barcode.text == ""){
+                                        _alertFailed(context,"Barcode is mandatory");
+                                      }
+                                      else if (description.text == ""){
+                                        _alertFailed(context,"Description is mandatory");
+                                      }
+                                      else {
+                                     _onsaved(code.text, barcode.text, description.text, _valgroup, _valgrade, _valDead , 
+                                     qtySat.text, inStock.text, totalinstock.text, minsstock.text, maxstock.text, curpricelist.text);
+                                   _alertSave(context,"Save Successfuly");
+                                      }                                                                                 
                                    }, 
                                    child: Text('Save',style: TextStyle(color:Colors.white)
                                    ),
@@ -331,4 +381,14 @@ class _ItemAddMasterState extends State<ItemAddMaster> {
              }
      
 
+  bool validateAndSave() {
+    final form = formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+
 }
+

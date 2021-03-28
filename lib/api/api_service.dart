@@ -5,7 +5,7 @@ import '../model/item_grade_model.dart';
 import '../model/item_group_model.dart';
 import '../model/item_master_model.dart';
 
-const web = '192.168.1.5:3000';
+const web = '192.168.100.25:3000';
 
 
 class APIServiceLogin {
@@ -92,7 +92,7 @@ class APIServiceItemMasterPost {
     Uri url = new Uri.http(web,'/item');
     final response = await http.post(url,body: masterrequestmodel.toJson());
     
-    if (response.statusCode == 200 || response.statusCode == 400) {
+    if (response.statusCode == 201 || response.statusCode == 400) {
       return itemMasterPostFromJson(response.body);
     } else {
       throw Exception('Failed to load data!');

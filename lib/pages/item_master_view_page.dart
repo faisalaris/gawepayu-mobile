@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_http_post_request/model/item_master_model.dart';
+import '../pages/item_master_edit_page.dart';
 
 
 // ignore: must_be_immutable
@@ -29,7 +30,7 @@ class _ItemMasterViewState extends State<ItemMasterView>
       floatingActionButton: FloatingActionButton
       (child:Icon(Icons.edit,color: Colors.white,) ,
       backgroundColor: Colors.redAccent,
-      onPressed: (){},
+      onPressed: ()=>Navigator.push(context,MaterialPageRoute(builder: (context) => ItemEditMaster())),
       ),
       appBar: AppBar(
         title: Text(
@@ -145,21 +146,32 @@ class _ItemMasterViewState extends State<ItemMasterView>
                     controller: _controller,
                     tabs: [
                       new Tab(
-                        icon: const Icon(Icons.home),
-                        text: 'Address',
+                        icon: const Icon(Icons.receipt),
+                        text: 'Selling Price List',
                       ),
                       new Tab(
-                        icon: const Icon(Icons.my_location),
-                        text: 'Location',
+                        icon: const Icon(Icons.receipt),
+                        text: 'Purchasing Price List',
                       ),
                     ],
+                    
                   ),
+                   
                 ),
               ]),
               )
             ],
           ),
-
+            SizedBox(
+              height: 300.0,
+              child :TabBarView
+                        (controller:_controller ,
+                        children: <Widget>[
+                          Text("Price list"),
+                          Text("Purchase List")
+                       ]
+                     )
+            )
           ]
           )
       );

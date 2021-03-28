@@ -19,23 +19,21 @@ List<ItemMasterRequestModel> itemMasterPostFromJson(String str) => List<ItemMast
 
 
 class ItemMasterRequestModel {
-  String parent;
   String code;
   String barcode;
   String description;
   String group;
   String grade;
-  int isdeadstock;
-  int qtySat;
-  int inStock;
-  int totalInstock;
-  int minStock;
-  int maxStock;
-  int curpricelist;
+  dynamic isdeadstock;
+  dynamic qtySat;
+  dynamic inStock;
+  dynamic totalInstock;
+  dynamic minStock;
+  dynamic maxStock;
+  dynamic curpricelist;
 
 
   ItemMasterRequestModel({
-    this.parent,
     this.code,
     this.barcode,
     this.description,
@@ -51,7 +49,6 @@ class ItemMasterRequestModel {
   });
 
   factory ItemMasterRequestModel.fromJson(Map<String, dynamic> json) => ItemMasterRequestModel(
-        parent: json["parent"],
         code: json["code"],
         barcode: json["barcode"],
         description: json["description"],
@@ -68,19 +65,18 @@ class ItemMasterRequestModel {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
-      'parent': parent.trim(),
-      'code': code.trim(),
-      'barcode': barcode.trim(),
-      'description': description.trim(),
-      'group': group.trim(),
-      'grade': grade.trim(),
-      'isdeadstock':isdeadstock,
-      'qtysat': qtySat,
-      'instock': totalInstock,
-      'totalinstock': qtySat,
-      'minstock': minStock,
-      'maxstock': maxStock,
-      'curpricelist' : curpricelist
+      "code": code,
+      "barcode": barcode,
+      "description": description,
+      "group": group,
+      "grade": grade,
+      "isdeadstock":isdeadstock,
+      "qtysat": qtySat,
+      "instock": totalInstock,
+      "totalinstock": qtySat,
+      "minstock": minStock,
+      "maxstock": maxStock,
+      "curpricelist" : curpricelist
     };
 
     return map;
