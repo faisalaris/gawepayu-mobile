@@ -27,14 +27,14 @@ class ItemGradeRequestModel {
   });
 
   factory ItemGradeRequestModel.fromJson(Map<String, dynamic> json) => ItemGradeRequestModel(
-        code: json["code"],
-        description: json["description"],
+        code: json["gcode"],
+        description: json["longDesc"],
     );
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
-      'code': code.trim(),
-      'description': description.trim(),
+      'gcode': code,
+      'longDesc': description,
     };
 
     return map;

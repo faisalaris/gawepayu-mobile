@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_http_post_request/model/login_model.dart';
-import '../api/api_service.dart';
-import '../model/item_master_model.dart';
-import '../pages/item_master_view_page.dart';
-import '../pages/item_master_add_page.dart';
+import 'package:flutter_http_post_request/model/Item Master/item_master_model.dart';
+import 'package:flutter_http_post_request/api/api_service.dart';
+import './item_master_view_page.dart';
+import './item_master_add_page.dart';
+import 'package:flutter_http_post_request/ProgressHUD.dart';
 
 
 class ItemMaster extends StatefulWidget {
@@ -13,6 +13,9 @@ class ItemMaster extends StatefulWidget {
 
 
 class _ItemMasterState extends State<ItemMaster> {
+
+  bool isApiCallProcess = false;
+
   final TextEditingController _filter = new TextEditingController();
   List<ItemMasterRequestModel> _filteredNames = []; // names filtered by search text
   Icon _searchIcon = new Icon(Icons.search);
@@ -36,16 +39,19 @@ class _ItemMasterState extends State<ItemMaster> {
   }
     @override
     void initState() {
+    isApiCallProcess = true;
     APIServiceItemMasterGetAll apiItem = new APIServiceItemMasterGetAll();
     apiItem.getPost().then((value) {
+      if(value!= null){
       setState(() {
         _getItemMaster.addAll(value);
         _filteredNames = _getItemMaster ;
+        isApiCallProcess = false;
       });
-    });
+    }});
     super.initState();
     }
-
+  
   void _searchPressed() {
   setState(() {
     if (this._searchIcon.icon == Icons.search) {
@@ -66,9 +72,16 @@ class _ItemMasterState extends State<ItemMaster> {
   });
 }
 
-
-  
+  @override
   Widget build(BuildContext context) {
+    return ProgressHUD(
+      child: _masterPage(context),
+      inAsyncCall: isApiCallProcess,
+      opacity: 0.3, 
+    );
+  }
+  
+  Widget _masterPage(BuildContext context) {
 
     return new Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -85,8 +98,8 @@ class _ItemMasterState extends State<ItemMaster> {
           onPressed: _searchPressed,
         )
         ),
-        body: _buildList()
-      
+        body: _buildList(),
+              
         );
   }
 
@@ -112,7 +125,7 @@ class _ItemMasterState extends State<ItemMaster> {
               child: Column(children: [
             ListTile(
               leading: Icon(Icons.desktop_windows,size: 30,),
-              title: Text(_filteredNames[index].code +
+              title: Text(_filteredNames[index].code.toString() +
                   '-' +
                   _filteredNames[index].description,style: new TextStyle(fontSize: 30,color: Colors.redAccent),),
             ),

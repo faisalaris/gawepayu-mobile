@@ -1,26 +1,34 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../model/login_model.dart';
-import '../model/item_grade_model.dart';
-import '../model/item_group_model.dart';
-import '../model/item_master_model.dart';
+import '../model/Login/login_model.dart';
+import '../model/GenSet/item_grade_model.dart';
+import '../model/GenSet/item_group_model.dart';
+import '../model/GenSet/item_satuan_model.dart';
+import '../model/Item Master/item_master_model.dart';
 
 const web = '192.168.100.25:3000';
-
+//const web2 = '192.168.100.25:8080';
+const web2 = '192.168.1.100:8080';
+const apikey = '277f1bbb-f4c6-4ea7-93e7-5a2e2e9b42e4';
 
 class APIServiceLogin {
-  Future<List<LoginRequestModel>> getPost(
+  Future<LoginRequestModel> getPost(
       String username, String password) async {
       
        Map<String, String> qParams = {
       'username': username,
       'password': password,
     };
-    Uri url = new Uri.http(web,'/login',qParams);
-    final response = await http.get(url);
+    Uri url = new Uri.http(web2,'/api/GenUser/ValidateLogin',qParams);
+    final response = await http.post(url,
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    }
+    );
 
-    if (response.statusCode == 200 || response.statusCode == 400) {
-      return postFromJson(response.body);
+    if (response.statusCode == 200) {
+      return LoginRequestModel.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load data!');
     }
@@ -29,10 +37,16 @@ class APIServiceLogin {
 
 class APIServiceItemGrade {
   Future<List<ItemGradeRequestModel>> getPost() async {
-      
-    Uri url = new Uri.http(web,'/itemgrade');
-    final response = await http.get(url);
+       Map<String, String> qParams = {
+      'type': '03',
+    }; 
 
+    Uri url = new Uri.http(web2,'/api/GenSet/GetGenSetByType',qParams);
+    final response = await http.get(url,
+     headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    });
     if (response.statusCode == 200 || response.statusCode == 400) {
       return itemGradePostFromJson(response.body);
     } else {
@@ -43,10 +57,15 @@ class APIServiceItemGrade {
 
 class APIServiceItemGroup {
   Future<List<ItemGroupRequestModel>> getPost() async {
-      
-    Uri url = new Uri.http(web,'/itemgroup');
-    final response = await http.get(url);
-
+      Map<String, String> qParams = {
+      'type': '02',
+    };   
+    Uri url = new Uri.http(web2,'/api/GenSet/GetGenSetByType',qParams);
+    final response = await http.get(url,
+        headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    });
     if (response.statusCode == 200 || response.statusCode == 400) {
       return itemGroupPostFromJson(response.body);
     } else {
@@ -55,14 +74,42 @@ class APIServiceItemGroup {
   }
 }
 
+class APIServiceItemSatuan {
+  Future<List<ItemSatuanRequestModel>> getPost() async {
+      Map<String, String> qParams = {
+      'type': '05',
+    };   
+    Uri url = new Uri.http(web2,'/api/GenSet/GetGenSetByType',qParams);
+    final response = await http.get(url,
+        headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    });
+    if (response.statusCode == 200 || response.statusCode == 400) {
+      return itemSatuanPostFromJson(response.body);
+    } else {
+      throw Exception('Failed to load data!');
+    }
+  }
+}
+
 class APIServiceItemMasterGetAll {
   Future<List<ItemMasterRequestModel>> getPost() async {
-      
-    Uri url = new Uri.http(web,'/item');
-    final response = await http.get(url);
-
-    if (response.statusCode == 200 || response.statusCode == 400) {
+       Map<String, String> qParams = {
+      //'startrow' :'35000', 
+      'limit': '40000',
+    };  
+    Uri url = new Uri.http(web2,'/api/InvMst/GetInvMst',qParams);
+    final response = await http.get(url,
+     headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    });
+    if (response.statusCode == 200) {
       return itemMasterPostFromJson(response.body);
+      //var responseJson = json.decode(response.body);
+      //return (responseJson as List)
+      //.map((p) =>ItemMasterRequestModel.fromJson(p)).toList();
     } else {
       throw Exception('Failed to load data!');
     }
@@ -70,17 +117,21 @@ class APIServiceItemMasterGetAll {
 }
 
 class APIServiceItemMasterGet {
-  Future<List<ItemMasterRequestModel>> getPost( String description) async {
+  Future<ItemMasterRequestModel> getPost( int code) async {
       
-   Map<String, String> qParams = {
-      'description': description,
+   Map<String, dynamic> qParams = {
+      'code': code,
     };
 
-    Uri url = new Uri.http(web,'/item',qParams);
-    final response = await http.get(url);
-
-    if (response.statusCode == 200 || response.statusCode == 400) {
-      return itemMasterPostFromJson(response.body);
+    Uri url = new Uri.http(web2,'/api/InvMst/GetInvMasterByCode',qParams);
+    print(url);
+    final response = await http.get(url,
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    });
+    if (response.statusCode == 200) {
+      return ItemMasterRequestModel.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load data!');
     }
@@ -88,14 +139,69 @@ class APIServiceItemMasterGet {
 }
 
 class APIServiceItemMasterPost {
-  Future<List<ItemMasterRequestModel>> tojson( ItemMasterRequestModel masterrequestmodel) async {
-    Uri url = new Uri.http(web,'/item');
-    final response = await http.post(url,body: masterrequestmodel.toJson());
+  Future<ItemMasterPostModel> tojson( ItemMasterPostModel masterpostmodel) async {
+    dynamic _postBody = jsonEncode(masterpostmodel.toJson());
+    Uri url = new Uri.http(web2,'/api/InvMst/AddInvMst');
+    final response = await http.post(url,
+     headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    },
+    body: _postBody);
     
-    if (response.statusCode == 201 || response.statusCode == 400) {
-      return itemMasterPostFromJson(response.body);
+    if (response.statusCode == 200 ) {
+      dynamic _jsonBody = response.body;
+      ItemMasterPostModel getResponse = new ItemMasterPostModel();
+      getResponse = ItemMasterPostModel.fromJson(jsonDecode(_jsonBody));
+      return getResponse ;
     } else {
-      throw Exception('Failed to load data!');
+      throw Exception('Failed to post data!');
+    }
+  }
+}
+
+class APIServiceItemMasterPut {
+  Future<ItemMasterPutModel> tojson( ItemMasterPutModel masterputmodel) async {
+    dynamic _postBody = jsonEncode(masterputmodel.toJson());
+    Uri url = new Uri.http(web2,'/api/InvMst/UpdateInvMst');
+    final response = await http.put(url,
+     headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    },
+    body: _postBody);
+    
+    if (response.statusCode == 200 ) {
+      dynamic _jsonBody = response.body;
+      ItemMasterPutModel getResponse = new ItemMasterPutModel();
+      getResponse = ItemMasterPutModel.fromJson(jsonDecode(_jsonBody));
+      return getResponse ;
+    } else {
+      throw Exception('Failed to post data!');
+    }
+  }
+}
+
+class APIServicePriceListDelete {
+  Future<SpriceList> deleteJson( dynamic id) async {
+
+      Map<String, String> qParams = {
+      'id' :id.toString(), 
+    };  
+    Uri url = new Uri.http(web2,'/api/InvSpriceList/DeletePriceList',qParams);
+    final response = await http.delete(url,
+     headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    },);
+    
+    if (response.statusCode == 200 ) {
+      dynamic _jsonBody = response.body;
+      SpriceList getResponse = new SpriceList();
+      getResponse = SpriceList.fromJson(jsonDecode(_jsonBody));
+      return getResponse ;
+    } else {
+      throw Exception('Failed to post data!');
     }
   }
 }

@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../api/api_service.dart';
-import '../model/login_model.dart';
-import '../pages/home_page.dart' ;
-
-import '../ProgressHUD.dart';
+import 'package:flutter_http_post_request/api/api_service.dart';
+import 'package:flutter_http_post_request/model/Login/login_model.dart';
+import 'package:flutter_http_post_request/pages/HomePage/home_page.dart';
+import 'package:flutter_http_post_request/ProgressHUD.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -14,6 +13,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool hidePassword = true;
   bool isApiCallProcess = false;
+
+  String _username = "";
+  String _password = "";
+
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   LoginRequestModel loginRequestModel;
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -23,29 +26,45 @@ class _LoginPageState extends State<LoginPage> {
     loginRequestModel = new LoginRequestModel();
   }
 
-  Future _showAlert(BuildContext context,String message) async{
-    return showDialog(context: context, 
-    builder: (BuildContext contetext){
-      return new Container(
-        padding: new EdgeInsets.all(30.0),
-        color: Colors.white,
-        child: new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              new Text(message,style: new TextStyle(color:Colors.redAccent,fontWeight: FontWeight.bold),),
-              new TextButton(onPressed : () => Navigator.pop(context),child: new Text('close',style: new TextStyle(color:Colors.redAccent),) ,)  
-            ]
-        ),
-      );
-    });
-  }
+   Future _alertLogin(BuildContext context,String message) async {
+    return showDialog (
+      context: context,
+      builder : (BuildContext context) {
+        return AlertDialog(
+          title: Text("Info"),
+          content: Text(message),
+          actions : [
+          TextButton(onPressed:()
+          {Navigator.push(context,MaterialPageRoute(builder: (context) => HomePage()));} , 
+          child: Text("Ok"))
+          ]
+              );
+          }
+        );
+      }
+      
+   Future _alertErrorLogin(BuildContext context,String message) async {
+    return showDialog (
+      context: context,
+      builder : (BuildContext context) {
+        return AlertDialog(
+          title: Text("Info"),
+          content: Text(message),
+          actions : [
+          TextButton(onPressed:(){Navigator.pop(context);} , 
+          child: Text("Ok"))
+          ]
+              );
+          }
+        );
+      }
 
   @override
   Widget build(BuildContext context) {
     return ProgressHUD(
       child: _uiSetup(context),
       inAsyncCall: isApiCallProcess,
-      opacity: 0.3,
+      opacity: 0.3, 
     );
   }
 
@@ -84,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(height: 20),
                         new TextFormField(
                           keyboardType: TextInputType.text,
-                          onSaved: (input) => loginRequestModel.username = input,
+                          onSaved: (input) => _username = input,
                           decoration: new InputDecoration(
                             hintText: "username",
                             enabledBorder: UnderlineInputBorder(
@@ -107,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                               TextStyle(color: Theme.of(context).accentColor),
                           keyboardType: TextInputType.text,
                           onSaved: (input) =>
-                              loginRequestModel.password = input,
+                              _password= input,
                           validator: (input) => input.length < 3
                               ? "Password should be more than 3 characters"
                               : null,
@@ -154,17 +173,16 @@ class _LoginPageState extends State<LoginPage> {
                               });
 
                               APIServiceLogin apiService = new APIServiceLogin();
-                              apiService.getPost(loginRequestModel.username,loginRequestModel.password).then((value) {
+                              apiService.getPost(_username,_password).then((value) {
                                 if (value != null) {
                                   setState(() {
                                     isApiCallProcess = false;
                                   });
 
-                                  if (value.length > 0) {
-                                    _showAlert(context, 'Login Successfuly');
-                                        Navigator.push(context,MaterialPageRoute(builder: (context) => HomePage()));
+                                  if (value.status == 0) {
+                                    Navigator.push(context,MaterialPageRoute(builder: (context) => HomePage()));
                                   } else {
-                                    _showAlert(context, 'Failed to login');
+                                    _alertErrorLogin(context, value.statusMessage);
                                   }
                                 }
                               });

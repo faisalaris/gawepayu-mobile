@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_http_post_request/model/item_master_model.dart';
-import '../pages/item_master_edit_page.dart';
+import 'package:flutter_http_post_request/model/Item%20Master/item_master_model.dart';
+import './item_master_edit_page.dart';
 
 
 // ignore: must_be_immutable
-class ItemMasterView extends StatefulWidget {
-  List<ItemMasterRequestModel> list;
-  int index;
+class ItemMasterViewfromAdd extends StatefulWidget {
+ItemMasterRequestModel list;
 
-  ItemMasterView({this.list, this.index});
+  ItemMasterViewfromAdd({this.list});
 
   @override
   _ItemMasterViewState createState() => _ItemMasterViewState();
 }
 
-class _ItemMasterViewState extends State<ItemMasterView>
+class _ItemMasterViewState extends State<ItemMasterViewfromAdd>
     with SingleTickerProviderStateMixin {
-  TabController _controller;
+  TabController _controller; 
 
   @override
   void initState() {
@@ -34,7 +33,7 @@ class _ItemMasterViewState extends State<ItemMasterView>
       ),
       appBar: AppBar(
         title: Text(
-          "Item Code : ${widget.list[widget.index].code}",
+          "Item Code : ${widget.list.code}",
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.redAccent,
@@ -46,48 +45,48 @@ class _ItemMasterViewState extends State<ItemMasterView>
             Flexible(
                 child: new Container(
               width: 800,
-              height: 400,
+              height: 600,
               padding: new EdgeInsets.all(32),
               child: new Row(children: <Widget>[
                 Flexible(
                   child: new Container(
                     width: 400,
-                    height: 400,
+                    height: 600,
                     child: new Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         new Text(
-                          "Deskripsi : ${widget.list[widget.index].description}",
+                          "Deskripsi : ${widget.list.description}",
                           style: new TextStyle(
                               fontSize: 30.0, color: Colors.redAccent),
                         ),
                         Divider(),
                         new Text(
-                          "Barcode : ${widget.list[widget.index].barcode}",
+                          "Barcode : ${widget.list.barcode}",
                           style: new TextStyle(
                               fontSize: 30.0, color: Colors.redAccent),
                         ),
                         Divider(),
                         new Text(
-                          "Group : ${widget.list[widget.index].group}",
+                          "Group : ${widget.list.group[0].gcode}" +" - "+ "${widget.list.group[0].longDesc}",
                           style: new TextStyle(
                               fontSize: 30.0, color: Colors.redAccent),
                         ),
                         Divider(),
                         new Text(
-                          "Grade : ${widget.list[widget.index].grade}",
+                          "Grade : ${widget.list.grade[0].gcode}" +" - "+ "${widget.list.grade[0].longDesc}",
                           style: new TextStyle(
                               fontSize: 30.0, color: Colors.redAccent),
                         ),
                         Divider(),
                         new Text(
-                          "IsDeadStock : ${widget.list[widget.index].isdeadstock}",
+                          "IsDeadStock : ${widget.list.isdeadstock}",
                           style: new TextStyle(
                               fontSize: 30.0, color: Colors.redAccent),
                         ),
                         Divider(),
                         new Text(
-                          "Harga Beli : Rp. ${widget.list[widget.index].curpricelist}",
+                          "Harga Beli : Rp. ${widget.list.curpricelist}",
                           style: new TextStyle(
                               fontSize: 30.0, color: Colors.redAccent),
                         ),
@@ -95,38 +94,45 @@ class _ItemMasterViewState extends State<ItemMasterView>
                     ),
                   ),
                 ),
+                SizedBox(width: 20),
                 new Container(
                     width: 400,
-                    height: 400,
+                    height: 600,
                     child: new Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         new Text(
-                          "Quantity satuan : ${widget.list[widget.index].qtySat}",
+                          "Quantity satuan : ${widget.list.qtySat}",
                           style: new TextStyle(
                               fontSize: 30.0, color: Colors.redAccent),
                         ),
                         Divider(),
                         new Text(
-                          "Instock : ${widget.list[widget.index].inStock}",
+                          "Instock : ${widget.list.inStock}",
                           style: new TextStyle(
                               fontSize: 30.0, color: Colors.redAccent),
                         ),
                         Divider(),
                         new Text(
-                          "Total Instock : ${widget.list[widget.index].totalInstock}",
+                          "Total Instock : ${widget.list.totalInstock}",
                           style: new TextStyle(
                               fontSize: 30.0, color: Colors.redAccent),
                         ),
                         Divider(),
                         new Text(
-                          "Min stock : ${widget.list[widget.index].minStock}",
+                          "Min stock : ${widget.list.minStock}",
                           style: new TextStyle(
                               fontSize: 30.0, color: Colors.redAccent),
                         ),
                         Divider(),
                         new Text(
-                          "Max stock : ${widget.list[widget.index].maxStock}",
+                          "Max stock : ${widget.list.maxStock}",
+                          style: new TextStyle(
+                              fontSize: 30.0, color: Colors.redAccent),
+                        ),
+                        Divider(),
+                        new Text(
+                          "Input Date : ${widget.list.inputDate}",
                           style: new TextStyle(
                               fontSize: 30.0, color: Colors.redAccent),
                         ),
@@ -167,7 +173,7 @@ class _ItemMasterViewState extends State<ItemMasterView>
               child :TabBarView
                         (controller:_controller ,
                         children: <Widget>[
-                          Text("Price list"),
+                          Text("Price List"),
                           Text("Purchase List")
                        ]
                      )
@@ -176,4 +182,40 @@ class _ItemMasterViewState extends State<ItemMasterView>
           )
       );
   }
+
 }
+
+
+  // ignore: must_be_immutable
+  class SpriceList extends StatelessWidget {
+  
+  //List <SpriceList> _listprice = _ItemMasterViewState().getSprices();
+ 
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      padding : new EdgeInsets.all(32),
+      child: new Center(
+        child: new Column(
+          children:<Widget> [
+           DataTable(
+             columns: [
+               DataColumn(label: Text("Quantity")),
+               DataColumn(label: Text("Harga")),
+               DataColumn(label: Text("Tanggal Update"))
+             ], 
+             rows:[
+               DataRow(cells: [
+                 DataCell(
+                    Text("data")
+                 )
+               ])
+             ] 
+             )
+          ],
+        ),
+      )
+    );
+  }
+    
+  }
