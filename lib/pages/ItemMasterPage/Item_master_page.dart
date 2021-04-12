@@ -72,6 +72,24 @@ class _ItemMasterState extends State<ItemMaster> {
   });
 }
 
+void _reloadPressed() {
+    setState(() {
+    isApiCallProcess = true;
+    _getItemMaster = [];
+    _filteredNames =[];
+    APIServiceItemMasterGetAll apiItem = new APIServiceItemMasterGetAll();
+    apiItem.getPost().then((value) {
+      if(value!= null){
+      setState(() {
+        _getItemMaster.addAll(value);
+        _filteredNames = _getItemMaster ;
+        isApiCallProcess = false;
+      });
+    }});
+});
+
+}
+
   @override
   Widget build(BuildContext context) {
     return ProgressHUD(
@@ -96,7 +114,12 @@ class _ItemMasterState extends State<ItemMaster> {
           leading: new IconButton
           (icon: _searchIcon, 
           onPressed: _searchPressed,
-        )
+        ),
+        actions: [
+          IconButton(icon: Icon(Icons.refresh), 
+          onPressed: _reloadPressed)
+
+        ]
         ),
         body: _buildList(),
               

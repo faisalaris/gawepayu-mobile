@@ -379,56 +379,56 @@ var _addSpricePrice = TextEditingController(text: "0");
                                                               _updateItemmaster.qtySat = _itemmaster[0].qtySat;
                                                              }
                                                              else{
-                                                               _updateItemmaster.qtySat =int.parse(qtySat.text);
+                                                               _updateItemmaster.qtySat =double.parse(qtySat.text);
                                                              }
                                                              
                                                             if (inStock.text ==""){
                                                               _updateItemmaster.inStock = _itemmaster[0].inStock;
                                                              }
                                                              else{
-                                                               _updateItemmaster.inStock =int.parse(inStock.text);
+                                                               _updateItemmaster.inStock =double.parse(inStock.text);
                                                              }
 
                                                             if (inStock.text ==""){
                                                               _updateItemmaster.inStock = _itemmaster[0].inStock;
                                                              }
                                                              else{
-                                                               _updateItemmaster.inStock =int.parse(inStock.text);
+                                                               _updateItemmaster.inStock =double.parse(inStock.text);
                                                              }
 
                                                             if (totalinstock.text ==""){
                                                               _updateItemmaster.totalInstock = _itemmaster[0].totalInstock;
                                                              }
                                                              else{
-                                                               _updateItemmaster.totalInstock =int.parse(totalinstock.text);
+                                                               _updateItemmaster.totalInstock =double.parse(totalinstock.text);
                                                              }
 
                                                             if (minsstock.text ==""){
                                                               _updateItemmaster.minStock = _itemmaster[0].minStock;
                                                              }
                                                              else{
-                                                               _updateItemmaster.minStock =int.parse(minsstock.text);
+                                                               _updateItemmaster.minStock =double.parse(minsstock.text);
                                                              }
 
                                                             if (maxstock.text ==""){
                                                               _updateItemmaster.maxStock = _itemmaster[0].maxStock;
                                                              }
                                                              else{
-                                                               _updateItemmaster.maxStock =int.parse(maxstock.text);
+                                                               _updateItemmaster.maxStock =double.parse(maxstock.text);
                                                              }
 
                                                             if (maxstock.text ==""){
                                                               _updateItemmaster.maxStock = _itemmaster[0].maxStock;
                                                              }
                                                              else{
-                                                               _updateItemmaster.maxStock =int.parse(maxstock.text);
+                                                               _updateItemmaster.maxStock =double.parse(maxstock.text);
                                                              }
 
                                                              if (curpricelist.text ==""){
                                                               _updateItemmaster.curpricelist = _itemmaster[0].curpricelist;
                                                              }
                                                              else{
-                                                               _updateItemmaster.curpricelist =int.parse(curpricelist.text);
+                                                               _updateItemmaster.curpricelist =double.parse(curpricelist.text);
                                                              }
 
                                                              if (satuan.text ==""){

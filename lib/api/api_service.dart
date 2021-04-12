@@ -6,9 +6,10 @@ import '../model/GenSet/item_group_model.dart';
 import '../model/GenSet/item_satuan_model.dart';
 import '../model/Item Master/item_master_model.dart';
 
-const web = '192.168.100.25:3000';
+//const web = '192.168.100.25:3000';
 //const web2 = '192.168.100.25:8080';
-const web2 = '192.168.1.100:8080';
+//const web2 = '192.168.1.100:8080';
+const web2 = '192.168.1.220:8080';
 const apikey = '277f1bbb-f4c6-4ea7-93e7-5a2e2e9b42e4';
 
 class APIServiceLogin {
