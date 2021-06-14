@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
           content: Text(message),
           actions : [
           TextButton(onPressed:()
-          {Navigator.push(context,MaterialPageRoute(builder: (context) => HomePage()));} , 
+          {Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context) => HomePage()),(Route<dynamic>route) =>false);} , 
           child: Text("Ok"))
           ]
               );
@@ -180,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                                   });
 
                                   if (value.status == 0) {
-                                    Navigator.push(context,MaterialPageRoute(builder: (context) => HomePage()));
+                                    Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context) => HomePage()),(Route<dynamic>route) =>false);
                                   } else {
                                     _alertErrorLogin(context, value.statusMessage);
                                   }

@@ -9,7 +9,7 @@
     <application
 		android:usesCleartextTraffic="true"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="flutter_http_post_request"
+        android:label="GawePayu"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

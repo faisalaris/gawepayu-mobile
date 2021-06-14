@@ -461,7 +461,7 @@ var _addSpricePrice = TextEditingController(text: "0");
                                                              Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                  builder: (context) => ItemMaster()));
+                                                                  builder: (context) => ItemMaster(deadstock:'0')));
                                                           },
                                                           child: Text(
                                                               "Lanjutkan Proses")),

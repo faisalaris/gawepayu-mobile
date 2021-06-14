@@ -146,6 +146,11 @@ class ItemMasterPutModel {
     this.sPriceList
   });
 
+   @override
+  String toString() {
+    return description;
+  }
+
 factory ItemMasterPutModel.fromJson(Map<String, dynamic> json) => ItemMasterPutModel(
         parent: json["parent"] ?? 0,
         openingBalanceStocks : json["openningBalanceStock"],
@@ -241,6 +246,11 @@ class ItemMasterRequestModel {
     this.sPriceList,
     this.pPriceList
   });
+
+  @override
+  String toString() {
+    return description;
+  }
 
   factory ItemMasterRequestModel.fromJson(Map<String, dynamic> json) => ItemMasterRequestModel(
         parent: json["parent"] ?? 0,

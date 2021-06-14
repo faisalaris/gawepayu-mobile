@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_http_post_request/model/PO/po_master_model.dart';
 import 'package:flutter_http_post_request/model/Item Master/item_master_model.dart';
 import 'package:flutter_http_post_request/api/api_service.dart';
 import 'package:flutter_http_post_request/pages/HomePage/home_page.dart';
-import './item_master_view_page.dart';
-import './item_master_add_page.dart';
 import 'package:flutter_http_post_request/ProgressHUD.dart';
-import './item_master_scan_page.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import './po_master_view_page.dart';
+import './po_master_add_page.dart';
 
 
-class ItemMaster extends StatefulWidget {
-  String deadstock ;
+class PoMaster extends StatefulWidget {
 
-  ItemMaster({this.deadstock});
 
   @override
-  _ItemMasterState createState() => _ItemMasterState();
+  _PoMasterState createState() => _PoMasterState();
 }
 
 
-class _ItemMasterState extends State<ItemMaster> {
-
+class _PoMasterState extends State<PoMaster> {
+ 
 
   bool isApiCallProcess = false;
 
   final TextEditingController _filter = new TextEditingController();
-  List<ItemMasterRequestModel> _filteredNames = []; // names filtered by search text
+  List<PoMasterRequestModel> _filteredNames = []; // names filtered by search text
   Icon _searchIcon = new Icon(Icons.search);
   String _searchText = '';
-  Widget _appBarTitle = new Text( 'Search item (deskripsi)' ,style: TextStyle(color: Colors.white) ,);
-  List<ItemMasterRequestModel> _getItemMaster = [];
+  Widget _appBarTitle = new Text( 'Search PO (Supplier)' ,style: TextStyle(color: Colors.white) ,);
+  List<PoMasterRequestModel> _getItemMaster = [];
 
-  _ItemMasterState() {
+  List<ItemMasterRequestModel> _getItem = [];
+
+  _PoMasterState() {
     _filter.addListener(() {
       if (_filter.text.isEmpty) {
         setState(() {
@@ -48,12 +48,20 @@ class _ItemMasterState extends State<ItemMaster> {
     @override
     void initState() {
     isApiCallProcess = true;
-    APIServiceItemMasterGetAll apiItem = new APIServiceItemMasterGetAll();
-    apiItem.getPost(widget.deadstock).then((value) {
+    APIServicePOMasterGetAll apiPo = new APIServicePOMasterGetAll();
+    apiPo.getPost().then((value) {
       if(value!= null){
       setState(() {
         _getItemMaster.addAll(value);
         _filteredNames = _getItemMaster ;
+      });
+    }});
+
+    APIServiceItemMasterGetAll apiItem = new APIServiceItemMasterGetAll();
+    apiItem.getPost("0").then((value) {
+      if(value!= null){
+      setState(() {
+        _getItem.addAll(value);
         isApiCallProcess = false;
       });
     }});
@@ -73,7 +81,7 @@ class _ItemMasterState extends State<ItemMaster> {
       );
     } else {
       this._searchIcon = new Icon(Icons.search);
-      this._appBarTitle = new Text('Search Item (Deskirpsi)',style: TextStyle(color: Colors.white));
+      this._appBarTitle = new Text('Search PO (Supplier)',style: TextStyle(color: Colors.white));
        _filteredNames =_getItemMaster;
       _filter.clear();
     }
@@ -85,8 +93,8 @@ void _reloadPressed() {
     isApiCallProcess = true;
     _getItemMaster = [];
     _filteredNames =[];
-    APIServiceItemMasterGetAll apiItem = new APIServiceItemMasterGetAll();
-    apiItem.getPost(widget.deadstock).then((value) {
+    APIServicePOMasterGetAll apiItem = new APIServicePOMasterGetAll();
+    apiItem.getPost().then((value) {
       if(value!= null){
       setState(() {
         _getItemMaster.addAll(value);
@@ -134,9 +142,9 @@ void _reloadPressed() {
 
   Widget _buildList() {
     if ((_searchText.isNotEmpty)) {
-      List<ItemMasterRequestModel> tempList = [];
+      List<PoMasterRequestModel> tempList = [];
       for (int i = 0; i < _filteredNames.length; i++) {
-        if (_filteredNames[i].description.toLowerCase().contains(_searchText.toLowerCase())) {
+        if (_filteredNames[i].bpCode[0].desc.toLowerCase().contains(_searchText.toLowerCase())) {
           tempList.add(_filteredNames[i]);
         }
       }
@@ -149,13 +157,13 @@ void _reloadPressed() {
           height: 100,    
           child :Card(
             child : InkWell(
-              onTap: ()=>Navigator.push(context,MaterialPageRoute(builder: (context) => ItemMasterView(list:_filteredNames,index: index,))),
+              onTap: () =>Navigator.push(context,MaterialPageRoute(builder: (context) => PoMasterView(list:_filteredNames,item:_getItem,index: index,))),
               child: Column(children: [
             ListTile(
               leading: Icon(Icons.desktop_windows,size: 30,),
-              title: Text(_filteredNames[index].code.toString() +
+              title: Text('PO Number '+_filteredNames[index].docNum.toString() +
                   '-' +
-                  _filteredNames[index].description,style: new TextStyle(fontSize: 30,color: Colors.redAccent),),
+                  _filteredNames[index].bpCode[0].desc,style: new TextStyle(fontSize: 30,color: Colors.redAccent),),
             ),
           ])
           )
@@ -203,14 +211,14 @@ void _reloadPressed() {
           backgroundColor: Colors.red,
           label: 'Add Item',
           labelStyle: TextStyle(fontSize: 18.0),
-          onTap: ()=>Navigator.push(context,MaterialPageRoute(builder: (context) => ItemAddMaster())),
+          onTap: ()=>Navigator.push(context,MaterialPageRoute(builder: (context) => POAddMaster())),
         ),
         SpeedDialChild(
           child: Icon(Icons.scanner),
           backgroundColor: Colors.blue,
           label: 'Scan barcode',
           labelStyle: TextStyle(fontSize: 18.0),
-          onTap: ()=>Navigator.push(context,MaterialPageRoute(builder: (context) => ScanBarcode(list:_getItemMaster))),
+          onTap: (){}//=>Navigator.push(context,MaterialPageRoute(builder: (context) => ScanBarcode(list:_getItemMaster))),
         ),
       ],
     );

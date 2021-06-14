@@ -5,11 +5,12 @@ import '../model/GenSet/item_grade_model.dart';
 import '../model/GenSet/item_group_model.dart';
 import '../model/GenSet/item_satuan_model.dart';
 import '../model/Item Master/item_master_model.dart';
+import '../model/PO/po_master_model.dart';
 
 //const web = '192.168.100.25:3000';
-//const web2 = '192.168.100.25:8080';
+const web2 = '192.168.100.25:8080';
 //const web2 = '192.168.1.100:8080';
-const web2 = '192.168.1.220:8080';
+//const web2 = '192.168.100.:8080';
 const apikey = '277f1bbb-f4c6-4ea7-93e7-5a2e2e9b42e4';
 
 class APIServiceLogin {
@@ -56,6 +57,26 @@ class APIServiceItemGrade {
   }
 }
 
+class APIServiceBusinessP {
+  Future<List<BusinessPPO>> getPost() async {
+       Map<String, String> qParams = {
+      'type': '3',
+    }; 
+
+    Uri url = new Uri.http(web2,'/api/BusinessP/GetBpMasters',qParams);
+    final response = await http.get(url,
+     headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    });
+    if (response.statusCode == 200 || response.statusCode == 400) {
+      return businessPostFromJson(response.body);
+    } else {
+      throw Exception('Failed to load data!');
+    }
+  }
+}
+
 class APIServiceItemGroup {
   Future<List<ItemGroupRequestModel>> getPost() async {
       Map<String, String> qParams = {
@@ -95,12 +116,37 @@ class APIServiceItemSatuan {
 }
 
 class APIServiceItemMasterGetAll {
+  Future<List<ItemMasterRequestModel>> getPost(String isdeadstock) async {
+       Map<String, String> qParams = {
+      //'startrow' :'35000', 
+      'limit': '100',
+      'stock' : isdeadstock.toString()
+    };  
+    Uri url = new Uri.http(web2,'/api/InvMst/GetInvMst',qParams);
+    final response = await http.get(url,
+     headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    });
+    if (response.statusCode == 200) {
+      return itemMasterPostFromJson(response.body);
+      //var responseJson = json.decode(response.body);
+      //return (responseJson as List)
+      //.map((p) =>ItemMasterRequestModel.fromJson(p)).toList();
+    } else {
+      throw Exception('Failed to load data!');
+    }
+  }
+}
+
+class APIServiceItemMasterGetByBarcode {
   Future<List<ItemMasterRequestModel>> getPost() async {
        Map<String, String> qParams = {
       //'startrow' :'35000', 
-      'limit': '40000',
+      'barcode' : '8997007513065'
+      //barcode.toString()
     };  
-    Uri url = new Uri.http(web2,'/api/InvMst/GetInvMst',qParams);
+    Uri url = new Uri.http(web2,'/api/InvMst/GetInvMasterByBarCode',qParams);
     final response = await http.get(url,
      headers: <String, String>{
       'Content-Type': 'application/json; charset=utf-8',
@@ -208,3 +254,90 @@ class APIServicePriceListDelete {
 }
 
 
+class APIServicePOMasterGetAll {
+  Future<List<PoMasterRequestModel>> getPost() async {
+ 
+    Uri url = new Uri.http(web2,'/api/PoMst/GetPo');
+    final response = await http.get(url,
+     headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    });
+    if (response.statusCode == 200) {
+      return pOPostFromJson(response.body);
+      //var responseJson = json.decode(response.body);
+      //return (responseJson as List)
+      //.map((p) =>ItemMasterRequestModel.fromJson(p)).toList();
+    } else {
+      throw Exception('Failed to load data!');
+    }
+  }
+}
+
+class APIServicePoMasterPost {
+  Future<PoMasterPostModel> tojson( PoMasterPostModel popostmodel) async {
+    dynamic _postBody = jsonEncode(popostmodel.toJson());
+    Uri url = new Uri.http(web2,'/api/PoMst/AddPo');
+    final response = await http.post(url,
+     headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    },
+    body: _postBody);
+    
+    if (response.statusCode == 200 ) {
+      dynamic _jsonBody = response.body;
+      PoMasterPostModel getResponse = new PoMasterPostModel();
+      getResponse = PoMasterPostModel.fromJson(jsonDecode(_jsonBody));
+      return getResponse ;
+    } else {
+      throw Exception('Failed to post data!');
+    }
+  }
+}
+
+class APIServicePoMasterPut {
+  Future<PoMasterPutModel> tojson( PoMasterPutModel poputmodel) async {
+    dynamic _postBody = jsonEncode(poputmodel.toJson());
+    Uri url = new Uri.http(web2,'/api/PoMst/UpdatePo');
+    final response = await http.put(url,
+     headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    },
+    body: _postBody);
+    
+    if (response.statusCode == 200 ) {
+      dynamic _jsonBody = response.body;
+      PoMasterPutModel getResponse = new PoMasterPutModel();
+      getResponse = PoMasterPutModel.fromJson(jsonDecode(_jsonBody));
+      return getResponse ;
+    } else {
+      throw Exception('Failed to post data!');
+    }
+  }
+}
+
+class APIServicePoListDelete {
+  Future<PoTransDetailPut> deleteJson( dynamic code) async {
+
+      Map<String, String> qParams = {
+      'id' :code.toString(), 
+    };  
+    Uri url = new Uri.http(web2,'/api/PoTransList/DeletePoList',qParams);
+    final response = await http.delete(url,
+     headers: <String, String>{
+      'Content-Type': 'application/json; charset=utf-8',
+      'ApiKey' : apikey
+    },);
+    
+    if (response.statusCode == 200 ) {
+      dynamic _jsonBody = response.body;
+      PoTransDetailPut getResponse = new PoTransDetailPut();
+      getResponse = PoTransDetailPut.fromJson(jsonDecode(_jsonBody));
+      return getResponse ;
+    } else {
+      throw Exception('Failed to post data!');
+    }
+  }
+}

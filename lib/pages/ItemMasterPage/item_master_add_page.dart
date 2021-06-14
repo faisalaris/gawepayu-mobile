@@ -75,7 +75,7 @@ class _ItemAddMasterState extends State<ItemAddMaster> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ItemMaster()));
+                              builder: (context) => ItemMaster(deadstock :'0')));
                     },
                     child: Text("Ok"))
               ]);
@@ -118,12 +118,12 @@ class _ItemAddMasterState extends State<ItemAddMaster> {
       itemMaster.group = group;
       itemMaster.grade = grade;
       itemMaster.isdeadstock = _valdead;
-      itemMaster.qtySat = int.parse(qtysat);
-      itemMaster.inStock = int.parse(instock);
-      itemMaster.totalInstock = int.parse(totalInstock);
-      itemMaster.minStock = int.parse(minStock);
-      itemMaster.maxStock = int.parse(maxStock);
-      itemMaster.curpricelist = int.parse(curpricelist);
+      itemMaster.qtySat = double.parse(qtysat);
+      itemMaster.inStock = double.parse(instock);
+      itemMaster.totalInstock = double.parse(totalInstock);
+      itemMaster.minStock = double.parse(minStock);
+      itemMaster.maxStock = double.parse(maxStock);
+      itemMaster.curpricelist = double.parse(curpricelist);
       itemMaster.inputDate = inputdate;
       itemMaster.satuan = satuan;
 
